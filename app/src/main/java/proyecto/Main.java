@@ -38,7 +38,7 @@ public class Main {
         new Thread(() -> {
             try {
                 Server server = ServerBuilder.forPort(50051)
-                        .addServices(new UrlServiceImpl())
+                        .addService(new UrlServiceImpl())
                         .build();
                 server.start();
                 server.awaitTermination();
@@ -46,7 +46,6 @@ public class Main {
                 e.printStackTrace();
             }
         }).start();
-        int port = System.getenv("PORT") != null ? Integer.parseInt(System.getenv("PORT")) : 7000;
         Javalin app = Javalin.create(config -> {
 
             config.staticFiles.add(staticFileConfig -> {
@@ -65,7 +64,7 @@ public class Main {
                 staticFileConfig.aliasCheck = null;
             });
 
-        }).start(port);
+        }).start(7000);
 
         new HomeController(app).aplicarRutas();
         new UserController(app).aplicarRutas();
