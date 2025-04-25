@@ -7,8 +7,8 @@ RUN chmod +x ./gradlew
 RUN ./gradlew --no-daemon assemble --stacktrace --info
 
 # Si fallara, este comando no se ejecutaría, pero lo dejamos para railway
-EXPOSE ${PORT:-7000}
-ENV PORT=${PORT:-7000}
+EXPOSE ${PORT:-8080}
+ENV PORT=${PORT:-8080}
 ENV URL_MONGO=${mongodb+srv://josearieldabas01:HL4OcEYAGqynX5Jj@josedatabase.7dkjm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0}
 ENV DB_NOMBRE=${proyecto_final}
 
