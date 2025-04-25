@@ -1,15 +1,15 @@
-FROM gradle:8.4-jdk17 AS build
+FROM gradle:8.4-jdk17
 WORKDIR /app
 COPY . .
 RUN chmod +x ./gradlew
-RUN ./gradlew --no-daemon assemble
 
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
-COPY --from=build /app/public /app/public
+# Intenta compilar con detalles completos de errores
+RUN ./gradlew --no-daemon assemble --stacktrace --info
 
-ENV PORT=7000
-EXPOSE ${PORT}
+# Si fallara, este comando no se ejecutaría, pero lo dejamos para railway
+EXPOSE ${PORT:-7000}
+ENV PORT=${PORT:-7000}
+ENV URL_MONGO=${mongodb+srv://josearieldabas01:HL4OcEYAGqynX5Jj@josedatabase.7dkjm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0}
+ENV DB_NOMBRE=${proyecto_final}
 
-CMD ["sh", "-c", "java -Dserver.port=${PORT} -DURL_MONGO=${mongodb+srv://josearieldabas01:HL4OcEYAGqynX5Jj@josedatabase.7dkjm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0} -DDB_NOMBRE=${proyecto_final} -jar app.jar"]
+CMD ./gradlew build run --stacktrace
