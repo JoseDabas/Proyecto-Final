@@ -46,6 +46,7 @@ public class Main {
                 e.printStackTrace();
             }
         }).start();
+        int port = System.getenv("PORT") != null ? Integer.parseInt(System.getenv("PORT")) : 7000;
         Javalin app = Javalin.create(config -> {
 
             config.staticFiles.add(staticFileConfig -> {
@@ -64,7 +65,7 @@ public class Main {
                 staticFileConfig.aliasCheck = null;
             });
 
-        }).start(7000);
+        }).start(port);
 
         new HomeController(app).aplicarRutas();
         new UserController(app).aplicarRutas();
