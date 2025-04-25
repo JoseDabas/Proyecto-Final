@@ -1,13 +1,15 @@
-FROM gradle:8.4-jdk17
+FROM gradle:8.4-jdk17 AS build
 WORKDIR /app
 COPY . .
 RUN chmod +x ./gradlew
-EXPOSE ${PORT:-7000}
+RUN ./gradlew --no-daemon assemble
 
-# Define las variables de entorno
-ENV PORT=${PORT:-7000}
-ENV URL_MONGO=${mongodb+srv://josearieldabas01:HL4OcEYAGqynX5Jj@josedatabase.7dkjm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0}
-ENV DB_NOMBRE=${proyecto_final}
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/public /app/public
 
-# Comando para ejecutar la aplicación
-CMD ./gradlew build run
+ENV PORT=7000
+EXPOSE ${PORT}
+
+CMD ["sh", "-c", "java -Dserver.port=${PORT} -DURL_MONGO=${mongodb+srv://josearieldabas01:HL4OcEYAGqynX5Jj@josedatabase.7dkjm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0} -DDB_NOMBRE=${proyecto_final} -jar app.jar"]
