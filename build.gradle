@@ -103,8 +103,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-rootProject.name = 'proyecto-final'
-
 
 run{
     standardInput = System.in
